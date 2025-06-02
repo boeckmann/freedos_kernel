@@ -435,10 +435,10 @@ UWORD dskxfer(COUNT dsk, ULONG blkno, VOID FAR * buf, UWORD numblocks,
     if (FP_SEG(buf) >= 0xa000 && numblocks == 1 && bufloc != LOC_CONV)
     {
       IoReqHdr.r_trans = deblock_buf;
-      if (mode == DSKWRITE)
+      if ((mode == DSKWRITE) || (mode == DSKWRITEINT26))
         fmemcpy(deblock_buf, buf, dpbp->dpb_secsize);
       execrh((request FAR *) & IoReqHdr, dpbp->dpb_device);
-      if (mode == DSKREAD)
+      if ((mode == DSKREAD) || (mode == DSKREADINT25))
         fmemcpy(buf, deblock_buf, dpbp->dpb_secsize);
     }
     else
