@@ -1907,8 +1907,22 @@ void FAR * KernelAllocPara(size_t nPara, char type, char *name, int mode)
   if (UmbState != 1)
     mode = 0;
 
+again:
   if (mode)
   {
+    /* check if UMB is large enough, and resort to LMA if it is not! */
+    {
+      WORD umb_free = UMB_top - (umb_base_seg - umb_start);
+      /* we need one additional paragraph for the MCB, and another one
+         if the DOS data MCB is not yet established */
+      WORD paras_needed = nPara + ((umb_base_seg == umb_start) ? 2 : 1);
+
+      if (umb_free < paras_needed)
+      {
+        mode = 0;
+        goto again;
+      }
+    }
     base = umb_base_seg;
     start = umb_start;
   }
