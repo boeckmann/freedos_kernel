@@ -1884,7 +1884,7 @@ STATIC VOID CfgFailure(BYTE * pLine)
   }
   printf("CONFIG.SYS error in line %d\n", nCfgLine);
   printf(">>>%s\n   ", pTmp);
-  while (++pTmp != pLine)
+  while (pTmp++ != pLine)
     printf(" ");
   printf("^\n");
 }
