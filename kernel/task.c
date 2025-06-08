@@ -465,14 +465,15 @@ COUNT DosComLoader(BYTE FAR * namep, exec_blk * exp, COUNT mode, COUNT fd)
   UWORD env, asize = 0;
   
   {
-    UWORD com_size;
+    UWORD min_alloc_size;
     {
-      ULONG com_size_long = SftGetFsize(fd);
-      /* maximally 64k - 256 bytes stack -
-         256 bytes psp */
-      com_size = ((UWORD)min(com_size_long, 0xfe00u) >> 4) + 0x10;
+      /* determine minimum allocation size:
+           COM file size + psp and 256 stack bytes, rounded up to para,
+           but not more than 64k. */
+      ULONG com_file_size = SftGetFsize(fd);
+      if (com_file_size == DE_INVLDHNDL) return DE_INVLDHNDL;
+      min_alloc_size = (UWORD)(min(com_file_size+sizeof(psp)+256+15, 0x10000ul) >> 4);
     }
-
     if ((mode & 0x7f) != OVERLAY)
     {
       COUNT rc;
@@ -494,10 +495,11 @@ COUNT DosComLoader(BYTE FAR * namep, exec_blk * exp, COUNT mode, COUNT fd)
       /* yes, see RBIL, int21/ah=48 -- Bart */
 
       if (rc == SUCCESS)
-        rc = ExecMemLargest(&asize, com_size);
+        rc = ExecMemLargest(&asize, min_alloc_size);
       
       if (rc == SUCCESS)
-        /* Allocate our memory and pass back any errors         */
+        /* Allocate as much as we can, but not less than min_alloc_size.
+           Pass back any errors. */
         rc = ExecMemAlloc(asize, &mem, &asize);
 
       if (rc != SUCCESS)
@@ -513,7 +515,7 @@ COUNT DosComLoader(BYTE FAR * namep, exec_blk * exp, COUNT mode, COUNT fd)
       if (rc != SUCCESS)
         return rc;
 
-      ++mem;
+      ++mem;  /* skip MCB paragraph */
     }
     else
       mem = exp->load.load_seg;
