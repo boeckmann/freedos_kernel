@@ -223,6 +223,7 @@ int VA_CDECL printf(CONST char *fmt, ...)
   va_start(arg, fmt);
   charp = 0;
   do_printf(fmt, arg);
+  va_end(arg);
   return 0;
 }
 
@@ -234,6 +235,7 @@ STATIC int VA_CDECL fsprintf(char FAR * buff, CONST char * fmt, ...)
   va_start(arg, fmt);
   charp = buff;
   do_printf(fmt, arg);
+  va_end(arg);
   handle_char('\0');
   return 0;
 }
@@ -248,6 +250,7 @@ int VA_CDECL sprintf(char * buff, CONST char * fmt, ...)
   va_start(arg, fmt);
   charp = buff;
   do_printf(fmt, arg);
+  va_end(arg);
   handle_char('\0');
   return 0;
 }
