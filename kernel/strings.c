@@ -61,50 +61,40 @@ VOID _fstrcpy(REG BYTE FAR * d, REG BYTE FAR * s)
 
 int strcmp(REG CONST BYTE * d, REG CONST BYTE * s)
 {
-  while (*s != '\0' && *d != '\0')
+  while (*s != '\0' && *d == *s)
   {
-    if (*d == *s)
-      ++s, ++d;
-    else
-      return *d - *s;
+    ++s;
+    ++d;
   }
   return *d - *s;
 }
 
 COUNT fstrcmp(REG BYTE FAR * d, REG BYTE FAR * s)
 {
-  while (*s != '\0' && *d != '\0')
+  while (*s != '\0' && *d == *s)
   {
-    if (*d == *s)
-      ++s, ++d;
-    else
-      return *d - *s;
+    ++s;
+    ++d;
   }
   return *d - *s;
 }
 
 int strncmp(register const char *d, register const char *s, size_t l)
 {
-  size_t index = 1;
-  while (*s != '\0' && *d != '\0' && index++ <= l)
+  while (*s != '\0' && *d == *s && l--)
   {
-    if (*d == *s)
-      ++s, ++d;
-    else
-      return *d - *s;
+    ++s;
+    ++d;
   }
   return *d - *s;
 }
 
-COUNT fstrncmp(REG BYTE FAR * d, REG BYTE FAR * s, COUNT l)
+int fstrncmp(REG BYTE FAR * d, REG BYTE FAR * s, size_t l)
 {
-  COUNT index = 1;
-  while (*s != '\0' && *d != '\0' && index++ <= l)
+  while (*s != '\0' && *d == *s && l--)
   {
-    if (*d == *s)
-      ++s, ++d;
-    else
-      return *d - *s;
+    ++s;
+    ++d;
   }
   return *d - *s;
 }
