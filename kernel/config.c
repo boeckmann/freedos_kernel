@@ -1622,7 +1622,7 @@ err:printf("%s has invalid format\n", filename);
         nlsPackageHardcoded.cntry = entry.country;
         nlsPackageHardcoded.cp = entry.codepage;
         subf_data.length =      /* MS-DOS "CTYINFO" is up to 38 bytes */
-                min(subf_data.length, sizeof(struct CountrySpecificInfo));
+                min((size_t)subf_data.length, sizeof(struct CountrySpecificInfo));
       }
       if (hdr[i].id == 1)
         ptable = (BYTE FAR *)&nlsPackageHardcoded.nlsExt.size;
