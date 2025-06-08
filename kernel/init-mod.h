@@ -152,7 +152,7 @@ COUNT ASMPASCAL UMB_get_largest(void FAR * driverAddress,
 
 /* inithma.c */
 int MoveKernelToHMA(void);
-VOID FAR * HMAalloc(COUNT bytesToAllocate);
+VOID FAR * HMAalloc(UCOUNT bytesToAllocate);
 
 /* initoem.c */
 unsigned init_oem(void);
